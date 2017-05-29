@@ -1,0 +1,17 @@
+config BR2_PACKAGE_HOST_VPP
+	bool "host vpp"
+	depends on BR2_arm       || BR2_arm64       || BR2_aarch64      || \
+		BR2_i486         || BR2_i586        || BR2_i686         || \
+		BR2_powerpc64    || BR2_x86_64 
+	help
+	  The VPP platform is an extensible framework that provides 
+	  out-of-the-box production quality switch/router functionality. 
+	  It is the open source version of Cisco's Vector Packet Processing 
+	  (VPP) technology: a high performance, packet-processing stack that 
+	  can run on commodity CPUs. 
+
+	  This option builds an packet processor for your selected architecture.
+
+	  https://wiki.fd.io/view/VPP
+
+

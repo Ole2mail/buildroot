@@ -1,0 +1,10 @@
+--- maketricks/vpp.mk	2017-05-18 10:56:33.738557046 +0200
++++ vpp-17.0.4-ioam-anycast/build-data/packages/vpp.mk	2017-05-18 10:57:13.046654249 +0200
+@@ -21,7 +21,6 @@
+ vpp_configure_depend += dpdk-install
+ vpp_CPPFLAGS += $(call installed_includes_fn, dpdk)/dpdk
+ vpp_LDFLAGS += $(call installed_libs_fn, dpdk)
+-vpp_CPPFLAGS += -I/usr/include/dpdk
+ endif
+ ifeq ($($(PLATFORM)_uses_dpdk_cryptodev_sw),yes)
+ vpp_configure_args += --with-dpdk-crypto-sw

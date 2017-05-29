@@ -1,0 +1,19 @@
+--- maketricks/Makefile.am	2017-05-18 18:07:13.766702359 +0200
++++ vpp-17.0.4-ioam-anycast/src/vpp-api/java/Makefile.am	2017-05-19 08:44:49.849235188 +0200
+@@ -16,7 +16,6 @@
+ AM_LIBTOOLFLAGS = --quiet
+ 
+ AM_CFLAGS = -Wall -I${top_srcdir} -I${top_builddir} \
+-  -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux \
+   -I@top_srcdir@/plugins -I@top_builddir@/plugins
+ 
+ AM_LDFLAGS = -shared -avoid-version -rpath /none -no-undefined
+@@ -76,6 +75,8 @@
+ 	@$(JAVAH) -force -classpath jvpp-registry/target -d jvpp-registry io.fd.vpp.jvpp.VppJNIConnection
+ 	@$(JAVAH) -force -classpath jvpp-registry/target -d jvpp-registry io.fd.vpp.jvpp.JVppRegistryImpl
+ 	@touch jvpp-registry.ok
++	@cp $(JAVA_HOME)/include/jni.h .
++	@cp $(JAVA_HOME)/include/linux/jni_md.h .
+ 
+ define japigen
+ 	@echo "  JAPIGEN  $@"

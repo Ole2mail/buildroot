@@ -1,0 +1,20 @@
+--- maketricks/version	2017-05-23 17:28:32.440297173 +0200
++++ vpp-17.0.4-ioam-anycast/src/scripts/version	2017-05-23 17:29:07.176466127 +0200
+@@ -6,7 +6,7 @@
+ 
+ git rev-parse 2> /dev/null
+ if [ $? == 0 ]; then
+-    vstring=$(git describe)
++    vstring=$(git describe --always)
+ elif [ -f .version ]; then
+     vstring=$(cat .version)
+ else
+@@ -22,7 +22,7 @@
+ 
+ git rev-parse 2> /dev/null
+ if [ $? == 0 ]; then
+-    CMT=$(git describe --dirty --match 'v*'| cut -s -d- -f3,4)
++    CMT=$(git describe --always --dirty --match 'v*'| cut -s -d- -f3,4)
+ else
+     CMT=$(echo ${vstring} | cut -s -d- -f3,4)
+ fi

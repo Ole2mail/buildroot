@@ -1,0 +1,15 @@
+--- ts/maketricks/Makefile	2017-05-23 09:26:24.422518724 +0200
++++ vpp-17.0.4-ioam-anycast/Makefile	2017-05-23 09:27:23.626353007 +0200
+@@ -186,10 +186,10 @@
+ endif
+ 
+ dist:	$(BR)/scripts/.version
+-	$(MAKE) verstring=$(PLATFORM)-$(shell cat $(BR)/scripts/.version) prefix=$(PLATFORM) distversion
++	$(MAKE) verstring=$(PLATFORM)-$(shell cat $(BR)/scripts/.version) prefixDist=$(PLATFORM) distversion
+ 
+ distversion:	$(BR)/scripts/.version
+-	$(BR)/scripts/verdist ${BR} ${prefix}-$(shell $(BR)/scripts/version rpm-version) ${verstring}
++	$(BR)/scripts/verdist ${BR} ${prefixDist}-$(shell $(BR)/scripts/version rpm-version) ${verstring}
+ 	mv $(verstring).tar.gz $(BR)/rpm
+ 
+ build: $(BR)/.bootstrap.ok

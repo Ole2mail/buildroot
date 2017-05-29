@@ -1,0 +1,71 @@
+--- maketricks/root/Makefile	2017-05-19 11:28:20.966814238 +0200
++++ vpp-17.0.4-ioam-anycast/build-root/Makefile	2017-05-24 16:52:52.818423433 +0200
+@@ -196,9 +196,9 @@
+ MARCH = $(strip $($(PLATFORM)_march))
+ ifeq ($(MARCH),)
+   ifneq ($(wildcard $(TOOL_INSTALL_DIR)/bin/$(TARGET)-gcc),)
+-    TARGET_GCC = $(TOOL_INSTALL_DIR)/bin/$(TARGET)-gcc
++    TARGET_GCC ?= $(TOOL_INSTALL_DIR)/bin/$(TARGET)-gcc
+   else ifneq ($(wildcard $(MU_BUILD_ROOT_DIR)/tools/bin/$(TARGET)-gcc),)
+-    TARGET_GCC = $(MU_BUILD_ROOT_DIR)/tools/bin/$(TARGET)-gcc
++    TARGET_GCC ?= $(MU_BUILD_ROOT_DIR)/tools/bin/$(TARGET)-gcc
+   endif
+   ifneq ($(TARGET_GCC),)
+     MARCH = $(shell $(TARGET_GCC) -Q --help=target -march=native | grep march | sed -e 's/.*march=[[:space:]]*//')
+@@ -260,9 +260,9 @@
+ 
+ ## BURT
+ # we will deprecate INSTALL_DIR shortly for DFLT_INSTALL_DIR
+-INSTALL_DIR = $(MU_BUILD_ROOT_DIR)/$(INSTALL_PREFIX)$(ARCH)
++INSTALL_DIR = $(TARGET_DIR)
+ # DFLT_INSTALL_DIR used in platforms.mk for $(PLATFORM)_DESTDIR_BASE
+-DFLT_INSTALL_DIR := $(MU_BUILD_ROOT_DIR)/$(INSTALL_PREFIX)$(ARCH)
++DFLT_INSTALL_DIR := $(TARGET_DIR)
+ ## BURT
+ 
+ PLATFORM_IMAGE_DIR = $(MU_BUILD_ROOT_DIR)/$(IMAGES_PREFIX)$(PLATFORM)
+@@ -290,14 +290,13 @@
+ 
+ PACKAGE_BUILD_DIR = \
+   $(BUILD_DIR)/$(call package_build_dir_fn,$(PACKAGE))
+-PACKAGE_INSTALL_DIR = \
+-  $(call package_install_dir_fn,$(PACKAGE))
++PACKAGE_INSTALL_DIR = $(TARGET_DIR)
+ 
+ # Tools (gcc, binutils, glibc...) are installed here
+ TOOL_INSTALL_DIR = $(MU_BUILD_ROOT_DIR)/tools
+ 
+ # Target specific tools go here e.g. mu-build/tools/ppc-mu-linux
+-TARGET_TOOL_INSTALL_DIR = $(TOOL_INSTALL_DIR)/$(TARGET)
++TARGET_TOOL_INSTALL_DIR = $(TARGET_DIR)
+ 
+ # Set BUILD_DEBUG to vx or x enable shell command tracing.
+ BUILD_DEBUG =
+@@ -491,11 +490,11 @@
+ x86_64_libdir = $(BIARCH)
+ native_libdir = $($(NATIVE_ARCH)_libdir)
+ 
+-# lib or lib64 depending
+-arch_lib_dir = lib$($(BASIC_ARCH)_libdir)
++# lib or lib64 depending - already defined earlier
++# arch_lib_dir = lib$($(BASIC_ARCH)_libdir)
+ 
+ # find dynamic linker as absolute path
+-TOOL_INSTALL_LIB_DIR=$(TOOL_INSTALL_DIR)/$(TARGET)/$(arch_lib_dir)
++TOOL_INSTALL_LIB_DIR=$(TOOL_INSTALL_DIR)/$(arch_lib_dir)
+ DYNAMIC_LINKER=${shell cd $(TOOL_INSTALL_LIB_DIR); echo ld*.so.*}
+ 
+ # Pad dynamic linker & rpath so elftool will never have to change ELF section sizes.
+@@ -706,11 +705,8 @@
+ # Package install
+ ######################################################################
+ 
++# package get's embedded inside fakeroot tree so, no partial removal available ;
+ install_package =								\
+-    : by default, for non-tools, remove any previously installed bits ;		\
+-    $(if $(is_build_tool)$($(PACKAGE)_keep_instdir),				\
+-         true,									\
+-         rm -rf $(PACKAGE_INSTALL_DIR));					\
+     mkdir -p $(PACKAGE_INSTALL_DIR) ;						\
+     $(if $($(PACKAGE)_pre_install),$($(PACKAGE)_pre_install),true);		\
+     $(if $($(PACKAGE)_install),							\

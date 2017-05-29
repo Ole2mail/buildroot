@@ -1,0 +1,18 @@
+--- maketricks/suffix-rules.mk	2017-05-22 17:28:02.594186426 +0200
++++ vpp-17.0.4-ioam-anycast/src/suffix-rules.mk	2017-05-23 17:18:09.429531881 +0200
+@@ -18,10 +18,13 @@
+ 	@echo "  APIGEN  " $@ ;					\
+ 	mkdir -p `dirname $@` ;					\
+ 	$(CC) $(CPPFLAGS) -E -P -C -x c $<			\
+-	| @VPPAPIGEN@ --input - --output $@ --show-name $@ > /dev/null
++	| @VPPAPIGEN@ --input - --output $@ --show-name $@
+ 
+ %.api.json: %.api @VPPAPIGEN@
+ 	@echo "  JSON API" $@ ;					\
+ 	mkdir -p `dirname $@` ;					\
+ 	$(CC) $(CPPFLAGS) -E -P -C -x c $<			\
+-	| @VPPAPIGEN@ --input - --json $@ > /dev/null
++	| @VPPAPIGEN@ --input - --json $@ --show-name $@
++
++print-%:
++	@echo '$*=$($*)'

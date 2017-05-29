@@ -1,0 +1,18 @@
+--- maketricks/Makefile.am	2017-05-18 16:43:47.048010290 +0200
++++ vpp-17.0.4-ioam-anycast/src/examples/sample-plugin/Makefile.am	2017-05-18 16:44:45.828314067 +0200
+@@ -33,13 +33,13 @@
+ %.api.h: %.api
+ 	mkdir -p `dirname $@` ; \
+ 	$(CC) $(CPPFLAGS) -E -P -C -x c $^ \
+-	| vppapigen --input - --output $@ --show-name $@
++	| @VPPAPIGEN@ --input - --output $@ --show-name $@
+ 
+ %.api.json: %.api
+ 	@echo "  JSON APIGEN  " $@ ;				\
+ 	mkdir -p `dirname $@` ;					\
+ 	$(CC) $(CPPFLAGS) -E -P -C -x c $^			\
+-	| vppapigen --input - --json $@
++	| @VPPAPIGEN@ --input - --json $@
+ 
+ apidir = $(prefix)/api/plugins
+ apiincludedir = ${includedir}/vpp_plugins

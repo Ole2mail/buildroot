@@ -1,0 +1,72 @@
+--- maketricks/dpdk/Makefile	2017-05-23 19:01:49.289855766 +0200
++++ vpp-17.0.4-ioam-anycast/dpdk/Makefile	2017-05-24 16:31:17.504513288 +0200
+@@ -15,7 +15,7 @@
+ SHELL := /bin/bash
+ 
+ DPDK_BUILD_DIR        ?= $(CURDIR)/_build
+-DPDK_INSTALL_DIR      ?= $(CURDIR)/_install
++DPDK_INSTALL_DIR      ?= $(TARGET_DIR)
+ DPDK_PKTMBUF_HEADROOM ?= 128
+ DPDK_DOWNLOAD_DIR     ?= $(HOME)/Downloads
+ DPDK_DEBUG            ?= n
+@@ -42,38 +42,12 @@
+ ISA_L_CRYPTO_LIB_SOURCE := $(B)/isa-l_crypto-master
+ endif
+ 
+-ifneq (,$(findstring clang,$(CC)))
+-DPDK_CC=clang
+-else ifneq (,$(findstring icc,$(CC)))
+-DPDK_CC=icc
+-else
+-DPDK_CC=gcc
+-endif
++DPDK_CC               ?= gcc
+ 
+-##############################################################################
+-# Intel x86_64
+-##############################################################################
+-ifeq ($(shell uname -m),x86_64)
+-DPDK_TARGET           ?= x86_64-native-linuxapp-$(DPDK_CC)
+-DPDK_MACHINE          ?= nhm
+-DPDK_TUNE             ?= core-avx2
+-
+-##############################################################################
+-# Cavium ThunderX
+-##############################################################################
+-else ifneq (,$(findstring thunder,$(shell cat /sys/bus/pci/devices/0000:00:01.0/uevent | grep cavium)))
+-export CROSS=""
+-DPDK_TARGET           ?= arm64-thunderx-linuxapp-$(DPDK_CC)
+-DPDK_MACHINE          ?= thunderx
++DPDK_TARGET           ?= x86_64
++DPDK_MACHINE          ?= native
+ DPDK_TUNE             ?= generic
+ 
+-##############################################################################
+-# Unknown platofrm
+-##############################################################################
+-else
+-$(error unknown platform)
+-endif
+-
+ JOBS := $(shell grep processor /proc/cpuinfo | wc -l)
+ 
+ # compiler/linker custom arguments
+@@ -92,6 +66,10 @@
+ DPDK_MAKE_EXTRA_ARGS += AESNI_MULTI_BUFFER_LIB_PATH=$(AESNIMB_LIB_SOURCE)
+ endif
+ 
++ifeq ($(DPDK_DESPERATE_SSSE3),y)
++DPDK_EXTRA_CFLAGS += -msse4.2
++endif
++
+ # assemble DPDK make arguments
+ DPDK_MAKE_ARGS := -C $(DPDK_SOURCE) -j $(JOBS) \
+ 	T=$(DPDK_TARGET) \
+@@ -223,6 +201,7 @@
+ 
+ $(B)/.build.ok: $(DPDK_SOURCE_FILES)
+ 	@if [ ! -e $(B)/.config.ok ] ; then echo 'Please run "make config" first' && false ; fi
++	@echo --- building with $(DPDK_MAKE_ARGS) ---
+ 	@make $(DPDK_MAKE_ARGS) install
+ ifeq ($(DPDK_CRYPTO_SW_PMD),y)
+ 	@cp $(AESNIMB_LIB_SOURCE)/libIPSec_MB.a $(I)/lib/
