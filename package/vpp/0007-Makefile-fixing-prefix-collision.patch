@@ -1,5 +1,14 @@
---- ts/maketricks/Makefile	2017-05-23 09:26:24.422518724 +0200
-+++ vpp-17.0.4-ioam-anycast/Makefile	2017-05-23 09:27:23.626353007 +0200
+--- ts/makearounds/Makefile	2017-05-30 09:55:19.328732424 +0100
++++ vpp-17.0.4-ioam-anycast/Makefile	2017-05-30 10:01:36.621532541 +0100
+@@ -152,7 +152,7 @@
+ 	@ln -s /usr/bin/ccache $(BR)/tools/ccache-bin/gcc
+ 	@ln -s /usr/bin/ccache $(BR)/tools/ccache-bin/g++
+ endif
+-	@make -C $(BR) V=$(V) is_build_tool=yes tools-install
++	@make -C $(BR) V=$(V) is_build_tool=yes vpp_uses_external_dpdk=yes tools-install
+ 	@touch $@
+ 
+ bootstrap: $(BR)/.bootstrap.ok
 @@ -186,10 +186,10 @@
  endif
  

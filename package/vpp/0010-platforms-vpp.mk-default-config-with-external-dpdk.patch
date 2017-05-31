@@ -1,0 +1,38 @@
+--- makearounds/vpp.mk	2017-05-29 17:27:59.234508882 +0100
++++ vpp-17.0.4-ioam-anycast/build-data/platforms/vpp.mk	2017-05-30 08:42:36.152632205 +0100
+@@ -13,19 +13,8 @@
+ 
+ # vector packet processor
+ vpp_arch = native
+-ifeq ($(shell uname -m),x86_64)
+-vpp_march = corei7			# Nehalem Instruction set
+-vpp_mtune = corei7-avx			# Optimize for Sandy Bridge
+-else ifeq ($(shell uname -m),aarch64)
+-ifeq ($(TARGET_PLATFORM),thunderx)
+-vpp_march = armv8-a+crc
+-vpp_mtune = thunderx
+-vpp_dpdk_target = arm64-thunderx-linuxapp-gcc
+-else
+ vpp_march = native
+ vpp_mtune = generic
+-endif
+-endif
+ vpp_native_tools = vppapigen
+ 
+ vpp_uses_dpdk = yes
+@@ -43,9 +32,12 @@
+ # DPDK configuration parameters
+ # vpp_uses_dpdk_cryptodev_sw = yes
+ # vpp_uses_dpdk_mlx5_pmd = yes
+-# vpp_uses_external_dpdk = yes
+-# vpp_dpdk_inc_dir = /usr/include/dpdk
+-# vpp_dpdk_lib_dir = /usr/lib
++
++vpp_uses_external_dpdk = yes
++
++vpp_dpdk_inc_dir = $(DPDK_INCLUDE)
++vpp_dpdk_lib_dir = $(DPDK_LIB)
++
+ # vpp_dpdk_shared_lib = yes
+ 
+ vpp_debug_TAG_CFLAGS = -g -O0 -DCLIB_DEBUG -DFORTIFY_SOURCE=2 -march=$(MARCH) \

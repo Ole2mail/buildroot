@@ -1,0 +1,10 @@
+--- makearounds/src/configure.ac	2017-05-30 09:20:33.160845939 +0100
++++ vpp-17.0.4-ioam-anycast/src/configure.ac	2017-05-30 09:44:34.181069619 +0100
+@@ -211,6 +211,7 @@
+ PRINT_VAL([prefix], ${prefix})
+ PRINT_VAL([libdir], ${libdir})
+ PRINT_VAL([includedir], ${includedir})
++PRINT_VAL([cross_compiling], ${cross_compiling})
+ PRINT_VAL([CFLAGS], ${CFLAGS})
+ PRINT_VAL([CPPFLAGS], ${CPPFLAGS})
+ PRINT_VAL([LDFLAGS], ${LDFLAGS})

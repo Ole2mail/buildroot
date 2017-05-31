@@ -10,4 +10,11 @@ config BR2_PACKAGE_VPP
 	help
 	  VPP is an extensible framework that provides out-of-the-box production quality switch/router functionality. It is the open source version of Cisco's Vector Packet Processing (VPP) technology: a high performance, packet-processing stack that can run on commodity CPUs.
 
+if BR2_PACKAGE_VPP
 
+config BR2_PACKAGE_VPP_DPDK
+        bool "DPDK standalone build for VPP"
+        help
+	  attempts to build DPDK alone, next provide headers and libraries for VPP assembly (incomplete/very experimental)
+
+endif
