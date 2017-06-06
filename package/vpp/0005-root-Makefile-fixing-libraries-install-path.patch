@@ -1,6 +1,6 @@
---- ks/root/Makefile	2017-05-19 11:28:20.966814238 +0200
-+++ vpp-17.0.4-ioam-anycast/build-root/Makefile	2017-05-31 19:03:40.738305659 +0200
-@@ -196,9 +196,9 @@
+--- mr/root/Makefile	2017-05-19 11:28:20.966814238 +0200
++++ vpp-17.0.4-ioam-anycast/build-root/Makefile	2017-06-06 16:13:25.287984659 +0200
+@@ -196,12 +196,16 @@
  MARCH = $(strip $($(PLATFORM)_march))
  ifeq ($(MARCH),)
    ifneq ($(wildcard $(TOOL_INSTALL_DIR)/bin/$(TARGET)-gcc),)
@@ -11,8 +11,16 @@
 +    TARGET_GCC ?= $(MU_BUILD_ROOT_DIR)/tools/bin/$(TARGET)-gcc
    endif
    ifneq ($(TARGET_GCC),)
-     MARCH = $(shell $(TARGET_GCC) -Q --help=target -march=native | grep march | sed -e 's/.*march=[[:space:]]*//')
-@@ -260,9 +260,9 @@
+-    MARCH = $(shell $(TARGET_GCC) -Q --help=target -march=native | grep march | sed -e 's/.*march=[[:space:]]*//')
++    MARCH = $(shell $(TARGET_GCC) -Q --help=target | grep march | sed -e 's/.*march=[[:space:]]*//')
++# special case for arm based target, returning no march but ARCH word in response    
++    ifeq ($(MARCH),ARCH)
++	MARCH = $(PLATFORM)
++    endif
+   else
+     MARCH = native
+   endif
+@@ -260,9 +264,9 @@
  
  ## BURT
  # we will deprecate INSTALL_DIR shortly for DFLT_INSTALL_DIR
@@ -24,7 +32,7 @@
  ## BURT
  
  PLATFORM_IMAGE_DIR = $(MU_BUILD_ROOT_DIR)/$(IMAGES_PREFIX)$(PLATFORM)
-@@ -290,14 +290,13 @@
+@@ -290,14 +294,13 @@
  
  PACKAGE_BUILD_DIR = \
    $(BUILD_DIR)/$(call package_build_dir_fn,$(PACKAGE))
@@ -41,7 +49,7 @@
  
  # Set BUILD_DEBUG to vx or x enable shell command tracing.
  BUILD_DEBUG =
-@@ -491,12 +490,13 @@
+@@ -491,12 +494,13 @@
  x86_64_libdir = $(BIARCH)
  native_libdir = $($(NATIVE_ARCH)_libdir)
  
@@ -59,7 +67,7 @@
  
  # Pad dynamic linker & rpath so elftool will never have to change ELF section sizes.
  # Yes, this is a kludge.
-@@ -507,8 +507,9 @@
+@@ -507,8 +511,9 @@
  CROSS_LDFLAGS = $(strip $($(PLATFORM)_cross_ldflags))
  ifeq ($(CROSS_LDFLAGS),)
    CROSS_LDFLAGS =											\
@@ -71,7 +79,7 @@
  endif
  
  cross_ldflags = $(if $(is_native)$(is_build_tool),,$(CROSS_LDFLAGS) )
-@@ -706,11 +707,8 @@
+@@ -706,11 +711,8 @@
  # Package install
  ######################################################################
  
